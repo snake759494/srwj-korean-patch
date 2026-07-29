@@ -26,7 +26,7 @@ GBA 『슈퍼로봇대전 J』(Super Robot Taisen J, 2005)의 **게임 전반을
 3. [xdelta](https://github.com/jmacd/xdelta) 로 적용합니다(또는 xdelta UI 도구 사용):
 
    ```bash
-   xdelta -d -s "Super Robot Taisen J (Japan).gba" "Super.Robot.Taisen.J.Korean._v1.6.xdelta" "srwj_korean.gba"
+   xdelta -d -s "Super Robot Taisen J (Japan).gba" "Super.Robot.Taisen.J.Korean._v1.7.xdelta" "srwj_korean.gba"
    ```
 
 4. 생성된 `srwj_korean.gba` (한글 적용, 자동 확장으로 32MB) 를 mGBA·VBA 등 에뮬레이터나 플래시카트에서 실행합니다.
