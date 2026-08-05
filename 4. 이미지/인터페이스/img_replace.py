@@ -30,6 +30,33 @@ if os.path.exists(_op):
     _OVERRIDE = {int(k): tuple(v) for k, v in json.load(open(_op, encoding='utf-8')).items() if k.isdigit()}
 
 
+_REFPAL = {}
+_rp = os.path.join(_HERE, 'ref_palettes.json')
+if os.path.exists(_rp):
+    _REFPAL = {int(k): v for k, v in json.load(open(_rp, encoding='utf-8')).items() if k.isdigit()}
+
+
+def _ref_from_png_or_table(jp_dir, fname, ai):
+    """(16색 팔레트, 투명비율) — 원본(일본어) PNG가 있으면 그것을, 없으면 ref_palettes.json.
+
+    원본 PNG는 게임 그래픽이라 저장소에 없다. 삽입에 실제로 필요한 값은
+    16색 RGB 표와 투명(인덱스0) 비율뿐이므로 표만 남겨 두고 그대로 쓴다.
+    (make_ref_palettes.py 로 생성)
+    """
+    p = os.path.join(jp_dir, fname) if jp_dir else None
+    if p and os.path.exists(p):
+        im = Image.open(p)
+        pal = im.getpalette() or []
+        if len(pal) >= 48:
+            raw = im.tobytes()
+            return ([tuple(pal[i * 3:i * 3 + 3]) for i in range(16)],
+                    sum(1 for v in raw if v == 0) / len(raw))
+    e = _REFPAL.get(ai)
+    if e:
+        return ([tuple(c) for c in e['pal']], e['zfrac'])
+    return (None, 0.0)
+
+
 def _plt_bank_from_rom(rom, plt_i, bank):
     o = L.asset_off(rom, plt_i)
     if rom[o:o + 3] != b'PLT':
@@ -125,12 +152,7 @@ def apply(rom, ko_dir, jp_dir, verbose=True):
                 if ai in _OVERRIDE:
                     ref_pal = _plt_bank_from_rom(rom, _OVERRIDE[ai][0], _OVERRIDE[ai][1])
                 else:
-                    jp_path = os.path.join(jp_dir, f) if jp_dir else None
-                    if jp_path and os.path.exists(jp_path):
-                        jp_im = Image.open(jp_path)
-                        jpp = jp_im.getpalette() or []
-                        if len(jpp) >= 48:
-                            ref_pal = [tuple(jpp[i * 3:i * 3 + 3]) for i in range(16)]
+                    ref_pal, _ = _ref_from_png_or_table(jp_dir, f, ai)
                 pp = ko_raw.getpalette() or []
                 png_cols = [tuple(pp[i * 3:i * 3 + 3]) for i in range(16)] if len(pp) >= 48 else []
                 if not ref_pal or not png_cols:
@@ -205,13 +227,10 @@ def apply(rom, ko_dir, jp_dir, verbose=True):
             if ov is not None:
                 ref = _plt_bank_from_rom(rom, ov[0], ov[1])
             if ref is None:
-                jp_path = os.path.join(jp_dir, f) if jp_dir else None
-                if not jp_path or not os.path.exists(jp_path):
-                    raise SystemExit(f'{f}: 16색 P모드가 아니고 기준 팔레트(원본 PNG)도 없어 매핑 불가')
-                jp = Image.open(jp_path)
-                palj = jp.getpalette()[:48]
-                ref = [tuple(palj[i * 3:i * 3 + 3]) for i in range(16)]
-                jz = sum(1 for v in jp.tobytes() if v == 0) / len(jp.tobytes())
+                ref, jz = _ref_from_png_or_table(jp_dir, f, ai)
+                if ref is None:
+                    raise SystemExit(f'{f}: 기준 팔레트가 없어 매핑 불가 '
+                                     f'(원본 PNG 또는 ref_palettes.json 필요)')
             else:
                 jz = 0.0  # 교정 팔레트 사용 시 배경 휴리스틱 생략(투명은 알파로만 판단)
             ko = ko_raw.convert('RGBA')

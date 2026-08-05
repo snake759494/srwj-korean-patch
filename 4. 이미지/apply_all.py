@@ -69,25 +69,34 @@ def step_titles(rom, render):
     print(f'[2/5] 시나리오 제목 {cnt}화 삽입 완료')
 
 
+def _jp_dir(folder):
+    """원본(일본어) PNG 폴더. 없으면 None — img_replace 가 ref_palettes.json 을 쓴다.
+
+    원본 PNG는 게임 그래픽이라 저장소에 넣지 않는다. 삽입에 실제로 필요한 값은
+    16색 팔레트와 투명 비율뿐이라 그 표만 ref_palettes.json 으로 동봉한다.
+    """
+    jp = os.path.join(KIT, folder, '일본어')
+    import glob as _g
+    return jp if _g.glob(os.path.join(jp, '*.png')) else None
+
+
 def step_battle(rom):
     img_replace = _load('전투메시지', 'img_replace')
     ko = os.path.join(KIT, '전투메시지', '한국어')
-    jp = os.path.join(KIT, '전투메시지', '일본어')
     # img_replace.apply 내부 print 억제 없이 그대로 사용
     import io, contextlib
     buf = io.StringIO()
     with contextlib.redirect_stdout(buf):
-        nrel = img_replace.apply(rom, ko, jp)
+        nrel = img_replace.apply(rom, ko, _jp_dir('전투메시지'))
     print(f'[3/5] 전투 메시지 70종 삽입 완료 (재배치 {nrel}건)')
 
 
 def step_interface(rom):
     img_replace = _load('인터페이스', 'img_replace')
     ko = os.path.join(KIT, '인터페이스', '한국어')
-    jp = os.path.join(KIT, '인터페이스', '일본어')
     import io, contextlib
     with contextlib.redirect_stdout(io.StringIO()):
-        nrel = img_replace.apply(rom, ko, jp)
+        nrel = img_replace.apply(rom, ko, _jp_dir('인터페이스'))
     print(f'[5/5] 인터페이스 4종 삽입 완료 (재배치 {nrel}건)')
 
 
