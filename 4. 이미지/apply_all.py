@@ -52,6 +52,11 @@ def step_titles(rom, render):
     sti = _load('시나리오제목', 'scn_title_insert')
     png_to_cells, insert_ep = sti.png_to_cells, sti.insert_ep
     pngdir = os.path.join(KIT, '시나리오제목', '시나리오제목_한글')
+    # PNG는 titles_ko.txt + neodgm.ttf 로 언제든 재생성되는 산출물이라 저장소에 넣지 않는다.
+    # 없으면(=갓 clone 한 상태) 조용히 0화가 되지 않도록 여기서 자동 렌더한다.
+    if not render and not glob.glob(os.path.join(pngdir, 'e*_img*.png')):
+        print('    · 시나리오제목 PNG가 없어 titles_ko.txt에서 렌더합니다...')
+        render = True
     if render:
         import subprocess
         subprocess.run([sys.executable, os.path.join(KIT, '시나리오제목', 'make_titles.py'),
@@ -66,6 +71,8 @@ def step_titles(rom, render):
         cells = png_to_cells(pth)
         insert_ep(rom, int(m.group(1)), cells, grow=True)
         cnt += 1
+    if cnt == 0:
+        raise SystemExit(f'시나리오 제목 PNG를 하나도 찾지 못했습니다: {pngdir}')
     print(f'[2/5] 시나리오 제목 {cnt}화 삽입 완료')
 
 
