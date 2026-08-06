@@ -11,17 +11,30 @@
 사용법:
   python audit_battle_width.py [--csv 결과.csv]
 """
-import sys, os, json, csv, collections
+import sys, os, json, csv, re, collections
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 KOREA_TXT = os.path.join(HERE, '..', '0.시나리오', 'korea2350.txt')
 
 VAR_LEN = {'①': 3, '②': 3, '③': 3, '④': 7, '⑤': 6, '⑥': 6}
 MAX_LINES = 3          # 4줄 이상 = 도몬 버그
+MARK = re.compile(r'\[[0-9a-f]{2}\]')     # 제어 마커 — 화면에 안 그려진다
+
+
+def normalize(s):
+    """삽입기(srwj_battle_kr_insert.Codec.normalize)와 같은 변환.
+
+    특히 '…' 은 '・・・'(3칸)로 펼쳐진다. 이걸 1칸으로 세면 실제보다
+    2칸 좁게 계산돼, 화면에서 그 줄이 통째로 안 나온다(제보: 중간 줄 빔).
+    """
+    s = MARK.sub('', s)
+    s = s.replace('…', '・・・').replace('...', '・・・').replace('‥', '・・')
+    s = re.sub(r'[.．]{2,}', lambda m: '・' * len(m.group()), s)
+    return s
 
 
 def width(s):
-    return sum(VAR_LEN.get(c, 1) for c in s)
+    return sum(VAR_LEN.get(c, 1) for c in normalize(s))
 
 
 def main():
