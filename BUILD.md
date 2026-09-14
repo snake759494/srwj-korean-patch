@@ -20,15 +20,15 @@
 | **xdelta** | 배포 패치를 만들 때만 필요 ([공식 배포처](https://github.com/jmacd/xdelta/releases)) |
 
 ```bash
-git clone https://github.com/snake7594/GBA-SRW-J.git
-cd GBA-SRW-J
+git clone https://github.com/snake759494/srwj-korean-patch.git
+cd srwj-korean-patch
 pip install openpyxl pillow
 ```
 
 원본 ROM을 **저장소 최상위**와 **`0.시나리오/`** 두 곳에 같은 이름으로 두세요.
 
 ```
-GBA-SRW-J/
+srwj-korean-patch/
 ├─ Super Robot Taisen J (Japan).gba      ← 여기 (xdelta 생성용)
 └─ 0.시나리오/
    └─ Super Robot Taisen J (Japan).gba   ← 그리고 여기 (빌드 입력)
@@ -101,7 +101,7 @@ python apply_all.py "슈퍼로봇대전J_한글.gba" srwj_korean_all.gba
 
 ### 제대로 빌드됐는지 확인
 
-v1.9 기준으로, 위 절차를 그대로 따르면 결과 ROM이 **바이트 단위까지 동일**하게 나옵니다.
+v2.3.1 기준으로, 위 절차를 그대로 따르면 결과 ROM이 **바이트 단위까지 동일**하게 나옵니다.
 
 ```bash
 md5sum "4. 이미지/srwj_korean_all.gba"
@@ -110,7 +110,7 @@ md5sum "4. 이미지/srwj_korean_all.gba"
 | | 값 |
 |---|---|
 | 크기 | 33,554,432 바이트 (32MB) |
-| MD5 | `f1233d91b8ca90997e57037dd7a2b5a9` |
+| MD5 | `f9828af24d850d80094aed33fc9a3d47` |
 
 이 값은 빈 폴더에 `git clone` 만 하고 원본 ROM 하나를 넣어 0~4단계를 돌려 확인한 것입니다.
 값이 다르면 단계를 건너뛰었거나 번역 파일을 수정한 경우입니다(수정했다면 다른 게 정상입니다).
@@ -119,7 +119,7 @@ md5sum "4. 이미지/srwj_korean_all.gba"
 
 ```bash
 cp "4. 이미지/srwj_korean_all.gba" .
-xdelta -B 16777216 -e -9 -S none -vfs "Super Robot Taisen J (Japan).gba" srwj_korean_all.gba "Super.Robot.Taisen.J.Korean._v1.9.xdelta"
+xdelta -B 16777216 -e -9 -S none -vfs "Super Robot Taisen J (Japan).gba" srwj_korean_all.gba "Super.Robot.Taisen.J.Korean._v2.3.1.xdelta"
 ```
 
 > **`-S none` 은 반드시 넣으세요.** 빼면 UniPatcher(안드로이드) 등에서
@@ -128,7 +128,7 @@ xdelta -B 16777216 -e -9 -S none -vfs "Super Robot Taisen J (Japan).gba" srwj_ko
 만든 패치는 이렇게 검증하세요 — 결과 MD5가 원본 ROM과 같아야 정상입니다.
 
 ```bash
-xdelta -d -s "Super Robot Taisen J (Japan).gba" "Super.Robot.Taisen.J.Korean._v1.9.xdelta" test.gba
+xdelta -d -s "Super Robot Taisen J (Japan).gba" "Super.Robot.Taisen.J.Korean._v2.3.1.xdelta" test.gba
 ```
 
 ---

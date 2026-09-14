@@ -1,5 +1,15 @@
 # 슈퍼로봇대전 J 한글화 프로젝트 (TRANS‑SRWJ)
 
+> **저장소 이전 안내 (2026-09-14)** — 이 프로젝트는 `snake7594/GBA-SRW-J` 에서
+> **`snake759494/srwj-korean-patch`** 로 옮겨 왔습니다. 커밋 이력·태그·릴리스 노트를
+> 그대로 가져왔고, 문서 안의 옛 주소는 전부 새 주소로 바꿨습니다. 옛 저장소의 이슈는 더 이상
+> 열리지 않으며, 제보 33건의 처리 내역은 [docs/ISSUES_ARCHIVE.md](docs/ISSUES_ARCHIVE.md) 에
+> 정리해 두었습니다. 최신 패치는 이 저장소의 [Releases](https://github.com/snake759494/srwj-korean-patch/releases) 에서 받으세요.
+>
+> **v2.3.1 (최신 · 최종본)** — 전투 대사에서 화자 이름이 사라지던 원인(첫 줄에 `이름「` 자리를
+> 예약하지 않던 것)을 찾아 172건을 고쳤고, 2~6화·47~52화 검수 제보를 반영했습니다.
+> 자세한 내용은 [docs/RELEASE_NOTES_v2.3.1.md](docs/RELEASE_NOTES_v2.3.1.md).
+
 <p align="center">
   <img src="docs/title_ko.png" alt="슈퍼로봇대전 J 한글 패치 타이틀 화면" width="480">
 </p>
@@ -22,16 +32,16 @@ GBA 『슈퍼로봇대전 J』(Super Robot Taisen J, 2005)의 **게임 전반을
 ## 빠른 시작 — 패치 적용 (플레이어용)
 
 1. **합법적으로 소유한** 일본판 원본 ROM `Super Robot Taisen J (Japan).gba` (16MB) 를 준비합니다.
-2. [**Releases**](https://github.com/snake7594/GBA-SRW-J/releases/latest) 에서 최신 `.xdelta` 패치를 내려받습니다.
+2. [**Releases**](https://github.com/snake759494/srwj-korean-patch/releases/latest) 에서 최신 `.xdelta` 패치를 내려받습니다.
 3. [xdelta](https://github.com/jmacd/xdelta) 로 적용합니다(또는 xdelta UI 도구 사용):
 
    ```bash
-   xdelta -d -s "Super Robot Taisen J (Japan).gba" "Super.Robot.Taisen.J.Korean._v1.9.xdelta" "srwj_korean.gba"
+   xdelta -d -s "Super Robot Taisen J (Japan).gba" "Super.Robot.Taisen.J.Korean._v2.3.1.xdelta" "srwj_korean.gba"
    ```
 
 4. 생성된 `srwj_korean.gba` (한글 적용, 자동 확장으로 32MB) 를 mGBA·VBA 등 에뮬레이터나 플래시카트에서 실행합니다.
 
-> 배포용 `.xdelta` 패치는 저장소 트리가 아니라 **[Releases](https://github.com/snake7594/GBA-SRW-J/releases)** 에 올라갑니다.
+> 배포용 `.xdelta` 패치는 저장소 트리가 아니라 **[Releases](https://github.com/snake759494/srwj-korean-patch/releases)** 에 올라갑니다.
 
 ---
 
@@ -40,18 +50,18 @@ GBA 『슈퍼로봇대전 J』(Super Robot Taisen J, 2005)의 **게임 전반을
 번역을 고쳐 자기만의 패치를 만들고 싶다면 → **[BUILD.md — 처음부터 끝까지 빌드 안내](BUILD.md)**
 
 저장소를 clone 하고 **원본 일본판 ROM 하나만** 준비하면 도구·번역 데이터·폰트·한글 이미지가
-전부 들어 있어 그대로 빌드됩니다. 빈 폴더에 clone 만 해서 돌렸을 때 배포판과 **바이트 단위까지
-동일한 ROM**(MD5 `f1233d91b8ca90997e57037dd7a2b5a9`)이 나오는 것을 확인했습니다.
+전부 들어 있어 그대로 빌드됩니다. 빈 폴더에 clone 만 해서 돌렸을 때 배포판(v2.3.1)과 **바이트 단위까지
+동일한 ROM**(MD5 `f9828af24d850d80094aed33fc9a3d47`)이 나오는 것을 확인했습니다.
 
 ---
 
 ## 버그·오타 제보
 
-플레이 중 발견한 오류나 오·번역은 **[여기서 제보](https://github.com/snake7594/GBA-SRW-J/issues/new/choose)** 해 주세요. 양식이 준비돼 있습니다.
+플레이 중 발견한 오류나 오·번역은 **[여기서 제보](https://github.com/snake759494/srwj-korean-patch/issues/new/choose)** 해 주세요. 양식이 준비돼 있습니다.
 
 - 🐞 **버그·오류 제보** — 멈춤·크래시·화면 깨짐 등. 패치 **버전 · 에뮬레이터/기기 · 발생 위치(몇 화) · 증상**을 적어 주시면 빠르게 확인·수정합니다.
 - ✏️ **오타·오역 제보** — 대사·메뉴의 잘못되거나 어색한 표현.
-- 💬 **질문·잡담** — 제보가 아닌 사용법 문의·의견은 [Discussions](https://github.com/snake7594/GBA-SRW-J/discussions) 에 남겨 주세요.
+- 💬 **질문·잡담** — 제보가 아닌 사용법 문의·의견도 [이슈](https://github.com/snake759494/srwj-korean-patch/issues/new/choose) 로 남겨 주세요.
 
 > 제보 시 스크린샷·세이브 파일(`.sav`)은 큰 도움이 됩니다. **단, 원본/패치 ROM 파일(`*.gba`)은 저작권상 첨부하지 마세요.**
 
@@ -66,7 +76,7 @@ GBA 『슈퍼로봇대전 J』(Super Robot Taisen J, 2005)의 **게임 전반을
 | [`0. 시나리오/`](0.%20시나리오/) | 전 70챕터 **시나리오 대사** 삽입 도구 + 번역 매칭 엑셀(`srwj_matched_all_*.xlsx`) |
 | [`2. 전투대사패치/`](2.%20전투대사패치/) | **전투(배틀) 대사·합체기** 삽입 도구 + `battle_dialogue*.json` |
 | [`3. SJIS추출/`](3.%20SJIS추출/) | **메뉴·정신커맨드·아이템 등 시스템 텍스트** 추출·번역(`translations.json`)·빌드 |
-| 루트 `!xdelta_e_SRWJ.bat` | 최종 통합 ROM에서 **배포용 차분 패치(xdelta)** 를 만드는 스크립트 (패치 자체는 [Releases](https://github.com/snake7594/GBA-SRW-J/releases)) |
+| 루트 `!xdelta_e_SRWJ.bat` | 최종 통합 ROM에서 **배포용 차분 패치(xdelta)** 를 만드는 스크립트 (패치 자체는 [Releases](https://github.com/snake759494/srwj-korean-patch/releases)) |
 
 각 폴더에는 자체 `README` 가 들어 있습니다.
 
@@ -142,7 +152,7 @@ ECD(LZSS) 압축 아카이브(약 15,000개 에셋)를 풀고 한글 이미지�
 - `!xdelta_e_SRWJ.bat` — 통합 한글 ROM에서 `xdelta` 차분 패치를 생성:
   `xdelta -B 16777216 -e -9 -S none -vfs "Super Robot Taisen J (Japan).gba" "srwj_korean_all.gba" "..._YYYYMMDD.xdelta"`
   - **`-S none`(2차 압축 끔)을 반드시 사용**하세요. `-S djw`(기본 2차 압축)는 [UniPatcher](https://github.com/btimofeev/UniPatcher) 등 구버전·축소 빌드 xdelta3에서 `XDelta3 내부 오류`(unknown secondary compressor ID)를 일으킵니다. 패치가 ~18% 커지지만 PC·모바일 모두에서 적용됩니다.
-- 생성된 `.xdelta` 패치는 저장소 트리가 아닌 **[Releases](https://github.com/snake7594/GBA-SRW-J/releases)** 로 배포합니다(원본 ROM 미포함 차분).
+- 생성된 `.xdelta` 패치는 저장소 트리가 아닌 **[Releases](https://github.com/snake759494/srwj-korean-patch/releases)** 로 배포합니다(원본 ROM 미포함 차분).
 
 ---
 
