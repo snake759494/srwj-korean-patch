@@ -30,18 +30,43 @@ SEP = '\u3000'
 SEP_W = char_width(SEP)        # = 1
 
 
+#  한 단어를 억지로 자를 때, 그냥 폭에서 끊으면 "잠깐만・・ / ・ 으앗!?" 처럼
+#  말줄임표 한가운데가 갈린다. 쉼표·마침표 뒤처럼 끊어도 되는 자리를 먼저 찾고,
+#  없을 때만 폭에서 끊는다. 점(・) 연속 안에서는 절대 끊지 않는다.
+_BREAKABLE_AFTER = ('、', ',', '。', '.', '！', '!', '？', '?', '」', '』', '）', ')')
+
+
 def _hard_break(word: str, budget: int):
-    """한 단어가 budget 보다 길면 폭 단위로 잘라 여러 조각으로."""
-    pieces, cur, cw = [], '', 0
-    for ch in word:
-        w = char_width(ch)
-        if cur and cw + w > budget:
-            pieces.append(cur)
-            cur, cw = '', 0
-        cur += ch
-        cw += w
-    if cur:
-        pieces.append(cur)
+    """한 단어가 budget 보다 길면 잘라서 여러 조각으로 (끊는 자리를 골라서)."""
+    pieces = []
+    rest = word
+    while text_width(rest) > budget:
+        # budget 안에 들어가는 최대 글자수
+        cut, acc = 0, 0
+        for i, ch in enumerate(rest):
+            w = char_width(ch)
+            if acc + w > budget:
+                break
+            acc += w
+            cut = i + 1
+        if cut <= 0:
+            cut = 1
+        # 끊어도 자연스러운 자리(문장부호 바로 뒤)를 뒤에서부터 찾는다
+        best = 0
+        for i in range(cut, 0, -1):
+            if rest[i - 1] in _BREAKABLE_AFTER and not (i < len(rest) and rest[i] in _BREAKABLE_AFTER):
+                best = i
+                break
+        if best == 0:
+            # 점(・) 한가운데는 피한다 — 앞의 점 무리 시작까지 물러난다
+            k = cut
+            while k > 1 and (rest[k - 1] == '・' or (k < len(rest) and rest[k] == '・')):
+                k -= 1
+            best = k if k > 0 else cut
+        pieces.append(rest[:best])
+        rest = rest[best:]
+    if rest:
+        pieces.append(rest)
     return pieces
 
 
@@ -90,19 +115,84 @@ def greedy_wrap(text: str, budgets, default_budget: int):
             cur, cw = word, ww
             continue
 
-        # 3) 단어가 한 줄보다도 길다 → 글자 단위로 쪼개며 줄을 채움
+        # 3) 단어가 한 줄보다도 길다 → 끊어도 되는 자리를 골라 쪼갠다
+        #    (그냥 폭에서 끊으면 말줄임표 한가운데가 갈린다 — _hard_break 참고)
         if cur:
             flush()
-        for ch in word:
-            w = char_width(ch)
-            if cur and cw + w > bud(li):
-                flush()
-            cur += ch
-            cw += w
+        rest = word
+        while text_width(rest) > bud(li):
+            piece = _hard_break(rest, bud(li))[0]
+            if not piece:
+                break
+            lines.append(piece)
+            li += 1
+            rest = rest[len(piece):]
+        cur, cw = rest, text_width(rest)
 
     if cur:
         lines.append(cur)
     return lines if lines else ['']
+
+
+# ──────────────────────────────────────────────────────────
+#  균형 줄바꿈 — 줄 수는 그대로 두고 '끊는 자리'만 다시 고른다
+# ──────────────────────────────────────────────────────────
+#  그리디는 앞 줄부터 꽉 채우므로 "노획할 수 있게 됐어 그 / 분이 뭐" 처럼
+#  한 글자만 남기고 끊기거나 구를 두 줄로 쪼개는 일이 잦다.
+#  같은 폭 예산 안에서 (남는 칸)^2 합이 최소가 되도록 다시 나누되,
+#    · 첫 줄은 화자명이 앞에 붙어 짧아 보이므로 채우는 쪽에 가중치를 준다
+#    · 한 글자만 남기고 끊으면 벌점, 문장부호 뒤에서 끊으면 가점
+#  줄 수는 그리디 결과와 같게 유지하므로 대사창이 길어지지 않는다.
+_END_SENT = ('。', '.', '!', '?', '！', '？', '…', '・')
+_END_COMMA = (',', '、')
+_FIRST_W = 2      # 첫 줄 '남는 칸' 가중치
+_ORPHAN = 60      # 한 글자만 남기고 끊을 때 벌점
+_SENT_BONUS = 40  # 문장 끝에서 끊을 때 가점
+_COMMA_BONUS = 15
+
+
+def balanced_wrap(joined: str, budgets):
+    """토큰(전각공백 기준)을 budgets 줄 수에 맞춰 나눈다. 못 맞추면 None."""
+    toks = [t for t in joined.split(SEP) if t]
+    n, m = len(budgets), len(toks)
+    if m == 0 or n == 0:
+        return None
+    w = [text_width(t) for t in toks]
+    pre = [0]
+    for x in w:
+        pre.append(pre[-1] + x)
+    INF = float('inf')
+    dp = [[INF] * (n + 1) for _ in range(m + 1)]
+    back = [[None] * (n + 1) for _ in range(m + 1)]
+    dp[0][0] = 0
+    for li in range(n):
+        for i in range(m):
+            if dp[i][li] == INF:
+                continue
+            for j in range(i + 1, m + 1):
+                wd = pre[j] - pre[i] + (j - i - 1)     # 단어 사이 공백 1칸씩
+                if wd > budgets[li]:
+                    break
+                slack = budgets[li] - wd
+                c = slack * slack * (_FIRST_W if li == 0 else 1)
+                if li < n - 1:                          # 마지막 줄은 끊김 평가 제외
+                    if w[j - 1] <= 1:
+                        c += _ORPHAN
+                    if toks[j - 1].endswith(_END_SENT):
+                        c -= _SENT_BONUS
+                    elif toks[j - 1].endswith(_END_COMMA):
+                        c -= _COMMA_BONUS
+                if dp[i][li] + c < dp[j][li + 1]:
+                    dp[j][li + 1] = dp[i][li] + c
+                    back[j][li + 1] = i
+    if dp[m][n] == INF:
+        return None
+    out, j, li = [], m, n
+    while li > 0:
+        i = back[j][li]
+        out.append(SEP.join(toks[i:j]))
+        j, li = i, li - 1
+    return out[::-1]
 
 
 def _wrap_lines(joined: str, first_budget: int, last_budget: int,
@@ -127,6 +217,16 @@ def _wrap_lines(joined: str, first_budget: int, last_budget: int,
     if lines and text_width(lines[-1]) > last_budget:
         tail = greedy_wrap(lines[-1], [last_budget], last_budget)
         lines = lines[:-1] + tail
+
+    # 줄 수는 그대로 두고 끊는 자리만 균형 있게 다시 고른다
+    k = len(lines)
+    if k == 1:
+        budgets = [min(first_budget, last_budget)]
+    else:
+        budgets = [first_budget] + [DISPLAY_WIDTH] * (k - 2) + [last_budget]
+    bal = balanced_wrap(joined, budgets)
+    if bal is not None and len(bal) == k:
+        lines = bal
     return lines
 
 
