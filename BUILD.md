@@ -101,7 +101,7 @@ python apply_all.py "슈퍼로봇대전J_한글.gba" srwj_korean_all.gba
 
 ### 제대로 빌드됐는지 확인
 
-v2.3.1 기준으로, 위 절차를 그대로 따르면 결과 ROM이 **바이트 단위까지 동일**하게 나옵니다.
+현재 트리(v2.6) 기준으로, 위 절차를 그대로 따르면 결과 ROM이 **바이트 단위까지 동일**하게 나옵니다.
 
 ```bash
 md5sum "4. 이미지/srwj_korean_all.gba"
@@ -110,7 +110,7 @@ md5sum "4. 이미지/srwj_korean_all.gba"
 | | 값 |
 |---|---|
 | 크기 | 33,554,432 바이트 (32MB) |
-| MD5 | `f9828af24d850d80094aed33fc9a3d47` |
+| MD5 | `e8457de26a2e597bcac2ad9c046306b7`  (v2.6)<br>`f9828af24d850d80094aed33fc9a3d47` (v2.3.1) |
 
 이 값은 빈 폴더에 `git clone` 만 하고 원본 ROM 하나를 넣어 0~4단계를 돌려 확인한 것입니다.
 값이 다르면 단계를 건너뛰었거나 번역 파일을 수정한 경우입니다(수정했다면 다른 게 정상입니다).
@@ -119,7 +119,7 @@ md5sum "4. 이미지/srwj_korean_all.gba"
 
 ```bash
 cp "4. 이미지/srwj_korean_all.gba" .
-xdelta -B 16777216 -e -9 -S none -vfs "Super Robot Taisen J (Japan).gba" srwj_korean_all.gba "Super.Robot.Taisen.J.Korean._v2.3.1.xdelta"
+xdelta -B 16777216 -e -9 -S none -vfs "Super Robot Taisen J (Japan).gba" srwj_korean_all.gba "Super.Robot.Taisen.J.Korean._v2.6.xdelta"
 ```
 
 > **`-S none` 은 반드시 넣으세요.** 빼면 UniPatcher(안드로이드) 등에서
@@ -128,7 +128,7 @@ xdelta -B 16777216 -e -9 -S none -vfs "Super Robot Taisen J (Japan).gba" srwj_ko
 만든 패치는 이렇게 검증하세요 — 결과 MD5가 원본 ROM과 같아야 정상입니다.
 
 ```bash
-xdelta -d -s "Super Robot Taisen J (Japan).gba" "Super.Robot.Taisen.J.Korean._v2.3.1.xdelta" test.gba
+xdelta -d -s "Super Robot Taisen J (Japan).gba" "Super.Robot.Taisen.J.Korean._v2.6.xdelta" test.gba
 ```
 
 ---

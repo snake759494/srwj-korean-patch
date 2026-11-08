@@ -6,9 +6,16 @@
 > 열리지 않으며, 제보 33건의 처리 내역은 [docs/ISSUES_ARCHIVE.md](docs/ISSUES_ARCHIVE.md) 에
 > 정리해 두었습니다. 최신 패치는 이 저장소의 [Releases](https://github.com/snake759494/srwj-korean-patch/releases) 에서 받으세요.
 >
-> **v2.3.1 (최신 · 최종본)** — 전투 대사에서 화자 이름이 사라지던 원인(첫 줄에 `이름「` 자리를
-> 예약하지 않던 것)을 찾아 172건을 고쳤고, 2~6화·47~52화 검수 제보를 반영했습니다.
-> 자세한 내용은 [docs/RELEASE_NOTES_v2.3.1.md](docs/RELEASE_NOTES_v2.3.1.md).
+> **v2.6 (최신)** — 즐겨찾기 특전 설명 2·3행이 표시폭 초과로 통째로 사라지던 문제를 고치고,
+> '게키강가' 표기 혼재(4종)를 통일했으며, 키라 전투 대사의 번역투 33건과 오타·오역 6건을
+> 바로잡았습니다. 자세한 내용은 [docs/RELEASE_NOTES_v2.6.md](docs/RELEASE_NOTES_v2.6.md).
+
+| 버전 | 내용 |
+|---|---|
+| [v2.6](docs/RELEASE_NOTES_v2.6.md) | 잘린 설명문 · 표기 혼재 · 굳어 있던 말투 (이슈 #5~#12) |
+| [v2.5](docs/RELEASE_NOTES_v2.5.md) | 원문에 없는 정보가 번역에 들어간 세 부류 (이슈 #2~#4) |
+| [v2.4](docs/RELEASE_NOTES_v2.4.md) | 줄바꿈을 '끊는 자리'부터 다시 잡음 (이슈 #1) |
+| [v2.3.1](docs/RELEASE_NOTES_v2.3.1.md) | 전투 대사 화자명 자리 예약 — 이름 미출력 172건 |
 
 <p align="center">
   <img src="docs/title_ko.png" alt="슈퍼로봇대전 J 한글 패치 타이틀 화면" width="480">
@@ -36,7 +43,7 @@ GBA 『슈퍼로봇대전 J』(Super Robot Taisen J, 2005)의 **게임 전반을
 3. [xdelta](https://github.com/jmacd/xdelta) 로 적용합니다(또는 xdelta UI 도구 사용):
 
    ```bash
-   xdelta -d -s "Super Robot Taisen J (Japan).gba" "Super.Robot.Taisen.J.Korean._v2.3.1.xdelta" "srwj_korean.gba"
+   xdelta -d -s "Super Robot Taisen J (Japan).gba" "Super.Robot.Taisen.J.Korean._v2.6.xdelta" "srwj_korean.gba"
    ```
 
 4. 생성된 `srwj_korean.gba` (한글 적용, 자동 확장으로 32MB) 를 mGBA·VBA 등 에뮬레이터나 플래시카트에서 실행합니다.
@@ -50,8 +57,8 @@ GBA 『슈퍼로봇대전 J』(Super Robot Taisen J, 2005)의 **게임 전반을
 번역을 고쳐 자기만의 패치를 만들고 싶다면 → **[BUILD.md — 처음부터 끝까지 빌드 안내](BUILD.md)**
 
 저장소를 clone 하고 **원본 일본판 ROM 하나만** 준비하면 도구·번역 데이터·폰트·한글 이미지가
-전부 들어 있어 그대로 빌드됩니다. 빈 폴더에 clone 만 해서 돌렸을 때 배포판(v2.3.1)과 **바이트 단위까지
-동일한 ROM**(MD5 `f9828af24d850d80094aed33fc9a3d47`)이 나오는 것을 확인했습니다.
+전부 들어 있어 그대로 빌드됩니다. 빈 폴더에 clone 만 해서 돌렸을 때 배포판과 **바이트 단위까지
+동일한 ROM**(v2.6 MD5 `e8457de26a2e597bcac2ad9c046306b7`)이 나오는 것을 확인했습니다.
 
 ---
 
