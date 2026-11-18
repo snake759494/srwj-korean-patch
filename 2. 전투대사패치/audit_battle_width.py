@@ -18,7 +18,10 @@ KOREA_TXT = os.path.join(HERE, '..', '0.시나리오', 'korea2350.txt')
 
 VAR_LEN = {'①': 3, '②': 3, '③': 3, '④': 7, '⑤': 6, '⑥': 6}
 MAX_LINES = 3          # 4줄 이상 = 도몬 버그
-MARK = re.compile(r'\[[0-9a-f]{2}\]')     # 제어 마커 — 화면에 안 그려진다
+MARK = re.compile(r'\[[0-9a-f]{2}\]')     # 인라인 코드 — 실행 중 글자로 바뀐다
+# [7d] 이름 / [7e] 기체명 / [7f] 무기명 — 폭 0 으로 보면 짤림을 놓친다(이슈 #18)
+CODE_LEN = {'7d': 3, '7e': 8, '7f': 10, '80': 6}
+CODE_DEFAULT = 4
 
 
 def normalize(s):
@@ -27,7 +30,7 @@ def normalize(s):
     특히 '…' 은 '・・・'(3칸)로 펼쳐진다. 이걸 1칸으로 세면 실제보다
     2칸 좁게 계산돼, 화면에서 그 줄이 통째로 안 나온다(제보: 중간 줄 빔).
     """
-    s = MARK.sub('', s)
+    s = MARK.sub(lambda m: 'x' * CODE_LEN.get(m.group(0)[1:3], CODE_DEFAULT), s)
     s = s.replace('…', '・・・').replace('...', '・・・').replace('‥', '・・')
     s = re.sub(r'[.．]{2,}', lambda m: '・' * len(m.group()), s)
     return s

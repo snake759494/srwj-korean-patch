@@ -33,13 +33,22 @@ LEN_PRESERVE = {193}
 
 VAR_LEN = {'①': 3, '②': 3, '③': 3, '④': 7, '⑤': 6, '⑥': 6}
 MARK = re.compile(r'\[[0-9a-f]{2}\]')
+# 인라인 코드는 화면에 '안 그려지는 제어문자'가 아니라 실행 중 글자로 바뀐다.
+#   [7d] 이름(카티아·토우야…) / [7e] 기체명 / [7f] 무기명
+# 폭 0 으로 보고 앞 줄에 붙이면 실행 시 줄이 넘쳐 그 줄이 통째로 사라진다(이슈 #18).
+CODE_LEN = {'7d': 3, '7e': 8, '7f': 10, '80': 6}
+CODE_DEFAULT = 4
 END_SENT = ('。', '.', '!', '?', '！', '？', '…', '・')
 END_COMMA = (',', '、')
 FIRST_WEIGHT, ORPHAN, SENT_BONUS, COMMA_BONUS = 2, 60, 40, 15
 
 
+def code_width(m):
+    return 'x' * CODE_LEN.get(m.group(0)[1:3], CODE_DEFAULT)
+
+
 def norm(s):
-    s = MARK.sub('', s or '')
+    s = MARK.sub(code_width, s or '')
     s = s.replace('…', '・・・').replace('...', '・・・').replace('‥', '・・')
     return re.sub(r'[.．]{2,}', lambda m: '・' * len(m.group()), s)
 

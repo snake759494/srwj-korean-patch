@@ -51,7 +51,7 @@ def _build_normalize():
     m = {
         ' ': '\u3000', '\xa0': '\u3000', '\u200b': '',
         '.': '。', ',': '、', '!': '！', '?': '？',
-        '"': '”', "'": '’', '(': '（', ')': '）',
+        '(': '（', ')': '）',
         '~': '～', ':': '：', ';': '；', '/': '／',
         '·': '・',
         # 대시·하이픈류 → cp932 로 인코딩 가능한 전각 형태로 통일.
@@ -138,6 +138,29 @@ def clean_text(s: str) -> str:
     return s
 
 
+_Q_OPEN_S, _Q_CLOSE_S = '‘', '’'
+_Q_OPEN_D, _Q_CLOSE_D = '“', '”'
+
+
+def pair_quotes(s: str) -> str:
+    """홑/겹 따옴표를 한 대사 안에서 여는 것 → 닫는 것 순으로 맞춘다.
+
+    번역 파일에는 ASCII ' " 와 전각 ‘ ’ “ ” 가 섞여 있다. 예전에는 ASCII 를
+    무조건 닫는 따옴표(’ ”)로 바꿔서 여는 자리에도 닫는 글자가 찍혔다.
+    """
+    out, open_s, open_d = [], False, False
+    for c in s:
+        if c in ("'", _Q_OPEN_S, _Q_CLOSE_S):
+            out.append(_Q_OPEN_S if not open_s else _Q_CLOSE_S)
+            open_s = not open_s
+        elif c in ('"', _Q_OPEN_D, _Q_CLOSE_D):
+            out.append(_Q_OPEN_D if not open_d else _Q_CLOSE_D)
+            open_d = not open_d
+        else:
+            out.append(c)
+    return ''.join(out)
+
+
 def normalize_text(s: str) -> str:
     """대사 텍스트를 게임용 전각 문자로 정규화.
 
@@ -151,6 +174,9 @@ def normalize_text(s: str) -> str:
     # 줄임표 전처리
     s = s.replace('…', '・・・').replace('‥', '・・')
     s = _ELLIPSIS_RE.sub(lambda m: '・' * len(m.group()), s)
+    # 따옴표: 여는 자리/닫는 자리를 번갈아 맞춘다
+    #  (ASCII " ' 를 무조건 닫는 따옴표로 바꾸면 여는 자리에도 ' 가 찍힌다 — 이슈 #50)
+    s = pair_quotes(s)
     # 글자별 정규화
     return ''.join(NORMALIZE.get(ch, ch) for ch in s)
 
