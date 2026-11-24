@@ -6,7 +6,11 @@
 > 열리지 않으며, 제보 33건의 처리 내역은 [docs/ISSUES_ARCHIVE.md](docs/ISSUES_ARCHIVE.md) 에
 > 정리해 두었습니다. 최신 패치는 이 저장소의 [Releases](https://github.com/snake759494/srwj-korean-patch/releases) 에서 받으세요.
 >
-> **v2.7.2 (최신)** — 35화 오타·말투(#51)와 밀리가 아키를 부르는 호칭(#52)을 고쳤습니다.
+> **v2.8 (최신)** — 화 제목이 **타이틀 화면과 세이브 화면에 두 벌로 따로 번역**돼 있어 68화 중 32화의
+> 문구가 달랐습니다. 전부 대조해 통일했습니다. 그 밖에 36~43화 말투·오타 12건을 반영했습니다.
+> 자세한 내용은 [docs/RELEASE_NOTES_v2.8.md](docs/RELEASE_NOTES_v2.8.md).
+>
+> **v2.7.2** — 35화 오타·말투(#51)와 밀리가 아키를 부르는 호칭(#52)을 고쳤습니다.
 > 같은 유형('원문에 `さん`이 있는데 번역에서 빠짐')을 전투 대사 전체에서 훑어 39건을 통일했습니다.
 > 자세한 내용은 [docs/RELEASE_NOTES_v2.7.2.md](docs/RELEASE_NOTES_v2.7.2.md).
 >
@@ -20,6 +24,7 @@
 
 | 버전 | 내용 |
 |---|---|
+| [v2.8](docs/RELEASE_NOTES_v2.8.md) | 화 제목 두 벌 통일 · 36~43화 말투·오타 (이슈 #53~#69) |
 | [v2.7.2](docs/RELEASE_NOTES_v2.7.2.md) | 35화 오타·말투 · 빠져 있던 호칭 (이슈 #51 #52) |
 | [v2.7.1](docs/RELEASE_NOTES_v2.7.1.md) | 닫았던 이슈 둘 재수정 — 판본 번역 뒤바뀜 (이슈 #30 #45) |
 | [v2.7](docs/RELEASE_NOTES_v2.7.md) | 따옴표 방향 · 전투 대사 실종 · 조사 누락 · 화자명 유실 (이슈 #13~#50) |
@@ -54,7 +59,7 @@ GBA 『슈퍼로봇대전 J』(Super Robot Taisen J, 2005)의 **게임 전반을
 3. [xdelta](https://github.com/jmacd/xdelta) 로 적용합니다(또는 xdelta UI 도구 사용):
 
    ```bash
-   xdelta -d -s "Super Robot Taisen J (Japan).gba" "Super.Robot.Taisen.J.Korean._v2.7.2.xdelta" "srwj_korean.gba"
+   xdelta -d -s "Super Robot Taisen J (Japan).gba" "Super.Robot.Taisen.J.Korean._v2.8.xdelta" "srwj_korean.gba"
    ```
 
 4. 생성된 `srwj_korean.gba` (한글 적용, 자동 확장으로 32MB) 를 mGBA·VBA 등 에뮬레이터나 플래시카트에서 실행합니다.
@@ -69,7 +74,7 @@ GBA 『슈퍼로봇대전 J』(Super Robot Taisen J, 2005)의 **게임 전반을
 
 저장소를 clone 하고 **원본 일본판 ROM 하나만** 준비하면 도구·번역 데이터·폰트·한글 이미지가
 전부 들어 있어 그대로 빌드됩니다. 빈 폴더에 clone 만 해서 돌렸을 때 배포판과 **바이트 단위까지
-동일한 ROM**(v2.7.2 MD5 `a8a29ee71a2c283e1d97762bdf28d856`)이 나오는 것을 확인했습니다.
+동일한 ROM**(v2.8 MD5 `0695cab4d3e439aec783533fcdb24569`)이 나오는 것을 확인했습니다.
 
 ---
 
